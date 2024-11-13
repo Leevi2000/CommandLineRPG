@@ -1,0 +1,53 @@
+[TXT]
+{NPC}: Good day... sir
+*The guard wobbles as he tries to keep his posture*
+[TXT END]
+
+[CHOICES]
+
+Why are you drunk? [TALK_1]
+
+I'll report you to your superiors! [TALK_2]
+
+You too [LEAVE]
+
+[CHOICES END]
+
+[TALK_1]
+	[TXT]
+	{NPC}: There was a party yesterday in the local Inn, I got a little too excited in there.
+		Adventurers from the neighboring town of Stonehelm got the damned twin beasts slain!
+	[TXT END]
+	[CHOICES]
+
+	I see. [LEAVE]
+
+	I'll report you to your superiors! [TALK_2]
+
+	[CHOICES END]
+
+[TALK_2]
+	[TXT]
+	{NPC}: Noo! Don't do that. I'll give you anything so leave me out of trouble!
+	[TXT END]
+
+	[CHOICES]
+
+	Hmm... Maybe I should accept this offer [OFFER]
+
+	[CHOICES END]
+
+
+[LEAVE]
+
+	[OUTCOME: LEAVE]
+
+
+[OFFER]
+	[TXT]
+	{NPC}: Thank you, I knew you're a good guy! Take this!
+	[TXT END]	
+
+	[OUTCOME: GIVE]
+
+

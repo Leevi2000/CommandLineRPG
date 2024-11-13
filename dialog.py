@@ -33,12 +33,12 @@ class DialogReader:
                 row_num = self.choose_dialog_option(row_num + 1, _content)
                 
             if "[OUTCOME:" in _content[row_num]:
-                self.outcome_handler(_content[row_num].strip(), npc_details)
-                return True
+                return self.outcome_handler(_content[row_num].strip(), npc_details)
+                
 
             row_num += 1
 
-        return True
+        return "NO OUTCOME"
 
     # Prints text block from the given row number to the text section end. Returns the end row number.
     def print_text_block(self, from_row, content):
@@ -108,4 +108,16 @@ class DialogReader:
         return -1
 
     def outcome_handler(self, outcome, npc_details):
+        if "ATTACK" in outcome:
+            pass
+
+        if "TRADE" in outcome:
+            pass
+
+        if "LEAVE" in outcome:
+            pass
+        
+        if "GIVE" in outcome:
+            pass
+
         print(str(outcome))

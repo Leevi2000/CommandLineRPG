@@ -47,6 +47,7 @@ class Map:
     map_to_direction(starting_house, town_center_area, north)
     map_to_direction(starting_house, neighbours_house, east)
     map_to_direction(town_center_area, marketplace, north)
+    map_to_direction(town_center_area, NPCs.drunken_guard_of_windermere, west)
     map_to_direction(marketplace, alley, west)
     map_to_direction(alley, NPCs.rogue, north)
 

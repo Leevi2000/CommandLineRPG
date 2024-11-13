@@ -14,7 +14,7 @@ class Node(Entity):
         items = []
 
 class NPC(Entity):
-    def __init__(self, hp, attack_dmg, name, speed, appearance, dialog_path):
+    def __init__(self, hp, attack_dmg, name, speed, appearance, dialog_path, excuse = ""):
         self.hp = hp
         self.attack_dmg = attack_dmg
         self.name = name
@@ -23,6 +23,7 @@ class NPC(Entity):
         self.dialog_path = "Dialogs\\" + dialog_path
         self.entity_type = "NPC"
         self.description = appearance
+        self.excuse = ""
 
 class Item(Entity):
     def __init__(self, name, weight, throw_dmg, description):
