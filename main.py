@@ -3,6 +3,7 @@ from objects import Entity, Node
 from NPCList import NPCs
 from dialog import DialogReader
 from map import Map
+import re
 
 def main():
     directions = ["NORTH", "EAST", "SOUTH", "WEST"]
@@ -10,16 +11,17 @@ def main():
 
     current_node = Map.starting_house
 
+    print("-----------")
+    cleaned_description = re.sub(r'\s+', ' ', current_node.detailed_description.strip())
+    print(cleaned_description)
+
     while True:
         print_locations(current_node)
         command = ask_input()
         if command in directions:
             current_node = node_action(current_node, command)
-
-    print("-----------------")
-    print("You meet eyes with a shady character when traversing through an old alley...")
-    
-    reader.read_dialog(NPCs.rogue)    
+            
+              
 
 def ask_input():
     allowed_input = ["NORTH", "EAST", "SOUTH", "WEST", "INSPECT", "TAKE"]
@@ -44,16 +46,19 @@ def node_action(current_node, command):
     }
 
     # Get the type if the direction exists in the dictionary, otherwise set type to None or a default value
+    entity = directions.get(command)
+    if command in directions and entity is not None and hasattr(entity, "entity_type"):
+        entity_type = entity.entity_type
 
-    if command in directions:
-        entity_type = directions.get(command).entity_type # type: ignore
-
-    if entity_type == "Node":
-        node = directions.get(command)
+    if entity_type == "Node" and entity is not None and hasattr(entity, "detailed_description"):
+        node = entity
+        print("-----------")
+        cleaned_description = re.sub(r'\s+', ' ', entity.detailed_description.strip())
+        print(cleaned_description)
 
     if entity_type == "NPC":
          reader = DialogReader()
-         reader.read_dialog(directions.get(command))
+         reader.read_dialog(entity)
 
     return node
     

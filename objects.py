@@ -3,13 +3,14 @@ class Entity:
     description = ""
 
 class Node(Entity):
-    def __init__(self, general_desc):
+    def __init__(self, general_desc, detailed_desc = ""):
         self.description = general_desc
         self.to_south = Entity()
         self.to_west = Entity()
         self.to_north = Entity()
         self.to_east = Entity()
         self.entity_type = "Node"
+        self.detailed_description = detailed_desc
         items = []
 
 class NPC(Entity):
