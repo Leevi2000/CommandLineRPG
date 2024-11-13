@@ -1,0 +1,6 @@
+{
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.typeCheckingMode": "basic",
+	"python.linting.pylintUseMinimalCheckers": false,
+	"python.linting.pylintEnabled": true
+}

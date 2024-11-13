@@ -1,0 +1,61 @@
+[TXT]
+{NPC}: Hey! What you looking at? Wishin' me to give you a great old smack to the face?
+[TXT END]
+
+[CHOICES]
+
+Bring it on! [FIGHT]
+
+Leave quickly [FLEE]
+
+Try talking [TALK]
+
+[CHOICES END]
+
+[FIGHT]
+	[TXT]
+	{NPC}: Prepare to get beaten!
+	[TXT END]
+		[OUTCOME: ATTACK]
+
+[FLEE]
+	[TXT]
+	{NPC}: Don't you dare to show yourself around here
+	[TXT END]
+		[OUTCOME: LEAVE]
+
+[TALK]
+	[TXT]
+	(Maybe I should try talking...)
+	[TXT END]
+
+	[CHOICES]
+
+	I just want to pass by! [TALK_1]
+
+	Why are you angry? [TALK_2]
+
+	Actually, do you have any equipment to sell? [TALK_3]
+
+
+	[CHOICES END]
+
+[TALK_1]
+	[TXT]
+	{NPC}: Go on! Be quick.
+	[TXT END]
+		[OUTCOME: LEAVE]
+
+[TALK_2]
+	[TXT]
+	{NPC}: Why should that matter!
+	[TXT END]
+		[OUTCOME: ATTACK]
+
+[TALK_3]
+	[TXT]
+	{NPC}: Oh... I see you're a... customer.
+	[TXT END]
+		[OUTCOME: TRADE]
+	
+
