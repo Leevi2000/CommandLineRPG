@@ -1,5 +1,5 @@
 from objects import Entity, Node
-from NPCList import NPCs
+from entity_list import NPCs
 
 def map_to_direction(node, target_entity, direction):
         

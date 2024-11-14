@@ -56,6 +56,11 @@ Try talking [TALK]
 	[TXT]
 	{NPC}: Oh... I see you're a... customer.
 	[TXT END]
-		[OUTCOME: TRADE]
+
+	[BUY DIALOG]
+	[OUTCOME: LEAVE]
+
+
+		
 	
 
