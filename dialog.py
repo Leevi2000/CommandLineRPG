@@ -41,24 +41,28 @@ class DialogReader:
                 previous_choice_row = row_num - 1
                 row_num = self.choose_dialog_option(row_num + 1, _content)
                 
-                
-            if "[OUTCOME:" in _content[row_num]:
-                return self.player, _content[row_num].strip(), 
-                
             if "[SELL DIALOG]" in _content[row_num]:
                 self.sell_dialog()
+                if "[OUTCOME:" in _content[row_num]:
+                    return self.player, _content[row_num].strip()
                 row_num = previous_choice_row
 
             if "[BUY DIALOG]" in _content[row_num]:
                 self.buy_dialog()
+                if "[OUTCOME:" in _content[row_num]:
+                    return self.player, _content[row_num].strip()
                 row_num = previous_choice_row
+
+            if "[OUTCOME:" in _content[row_num]:
+                return self.player, _content[row_num].strip()
 
             row_num += 1
 
         return self.player, "NO OUTCOME"
     
     def sell_dialog(self):
-        value_decrease_percent = 0.5
+        # Percentage of the original value
+        value_decrease_percent = 0.7
 
         while True:
             #items = self.player.inventory
@@ -139,6 +143,10 @@ class DialogReader:
 
             # Check whether or not the given input was allowed
             if int(item_id) > 0 and int(item_id) <= len(items):
+                if quantity > items[item_id-1][1]:
+                    print(f"{self.BAR} \n You can't buy more than there is stock!")
+                    continue
+                 
                 item_cost = item.value * quantity
                 player_wealth = self.player.calculate_wealth()
 
@@ -219,15 +227,16 @@ class DialogReader:
         while True:
             answer = input("> ")
             
-            if self.is_int(answer):
-                value = int(answer)
-        
+            if not self.is_int(answer):
+                continue
+
+            value = int(answer)
+
             # If allowed input answer, find the row for right dialog action from options list.
             if value > 0 and value <= len(options):
                 break
             else: 
                 print("Bad input! Try again.")
-
 
         return int(self.find_next_row_with_txt(options[value-1][1], row, content))  
     

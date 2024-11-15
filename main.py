@@ -1,3 +1,4 @@
+from operator import le
 from turtle import clear
 from typing import Self
 import entity_list
@@ -14,7 +15,7 @@ def main():
     reader = DialogReader()
 
     player = Player("Player")
-    player.add_item(Items.money, 20)
+    player.add_item(Items.money, 40)
 
     current_node = Map.starting_house
 
@@ -29,6 +30,8 @@ def main():
             current_node = node_action(current_node, command[0], player)
         if command[0] == "LOOK" and command[1] in directions:
             print_direction_detail(current_node, command[1])
+        if command[0] == "INVENTORY":
+            player.print_inventory()
             
 def print_direction_detail(node, direction):
     directions = {
@@ -50,10 +53,14 @@ def print_direction_detail(node, direction):
 
 def ask_input():
     allowed_input = ["NORTH", "EAST", "SOUTH", "WEST", "INSPECT", "TAKE", "LOOK", "INVENTORY"]
-    directions = ["NORTH", "EAST", "SOUTH", "WEST"]
+    directions = ["NORTH", "EAST", "SOUTH", "WEST", "NONE"]
 
     while True:
         command = input("> ").split()
+        if len(command) == 1:
+            command.append("NONE")
+        if len(command) != 2:
+            continue
 
         if command[0] not in allowed_input and command[1] not in directions:
             continue

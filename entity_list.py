@@ -2,7 +2,7 @@ from objects import *
 
 class Items:
     money = Item("Silver Coin", 0.01, 0, 1)
-    rogue_dagger = Weapon("Rogue's Dagger", 0.3, 5, 10, "Ominous marks around the dagger makes makes anyone wonder what the dagger has seen", 3, 1)
+    rogue_dagger = Weapon("Rogue's Dagger", 0.3, 5, 10, "A swift, lightweight dagger perfect for stealth and quick strikes.", 3, 1)
 
     apple = Healing("Apple", 0.2, 1, 3, "Looks so delicious that you could eat it straight away", 2)
     leather_tunic = Armor("Leather tunic", 3, 0, 10, "A piece of armor, looks comfortable", 2)

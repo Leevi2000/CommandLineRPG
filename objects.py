@@ -1,4 +1,5 @@
 from entity_list import *
+import math
 
 class Entity:
     entity_type = ""
@@ -24,6 +25,10 @@ class Item(Entity):
         self.entity_type = "Item"
         self.value = value
 
+    def get_details(self):
+        details = f""
+        return details
+
 class NPC(Entity):
     def __init__(self, hp = 1, attack_dmg = 1, name = "", speed = 1, general_description = "", dialog_path = "", excuse = ""):
         self.hp = hp
@@ -45,6 +50,7 @@ class NPC(Entity):
                 # It quantity goes zero, remove item from inventory
                 if self.items[x][1] <= 0:
                     self.items.pop(x)
+            break
 
     def add_item(self, item = Item(), quantity = 1):
 
@@ -70,6 +76,11 @@ class Weapon(Item):
         self.attack_speed = attack_speed
         self.entity_type = "Weapon"
 
+    def get_details(self):
+        details = f"Attack: {str(self.damage)}"
+        return details
+
+
 class Armor(Item):
     def __init__(self,name = "", weight = 0.0, throw_dmg = 0, value = 0, description = "", defense = 0):
         self.name = name
@@ -80,6 +91,10 @@ class Armor(Item):
         self.defense = defense
         self.entity_type = "Armor"
 
+    def get_details(self):
+        details = f"Defense: {str(self.defense)}"
+        return details
+
 class Healing(Item):
     def __init__(self, name = "", weight = 0.0, throw_dmg = 0, value = 0, description = "", healing = 0):
         self.name = name
@@ -89,4 +104,8 @@ class Healing(Item):
         self.value = value
         self.healing = healing
         self.entity_type = "Healing"
+
+    def get_details(self):
+        details = f"Healing: {str(self.healing)}"
+        return details
         
