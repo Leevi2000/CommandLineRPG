@@ -1,9 +1,10 @@
+from itertools import count
 from operator import truediv
 import entity_list
 from player import Player
 from objects import *
 from entity_list import *
-
+import math
 class Dialog:
     def __init__(self, filepath, relatedItems):
         self.filepath = filepath
@@ -29,7 +30,7 @@ class DialogReader:
             _content[x] = _content[x].lstrip()
 
         row_num = 0
-
+        previous_choice_row = 0
         while row_num < len(_content):
             if "[TXT]" in _content[row_num]:
                 print(self.BAR)
@@ -37,47 +38,108 @@ class DialogReader:
                 print(self.BAR)
 
             if "[CHOICES]" in _content[row_num]:
+                previous_choice_row = row_num - 1
                 row_num = self.choose_dialog_option(row_num + 1, _content)
+                
                 
             if "[OUTCOME:" in _content[row_num]:
                 return self.player, _content[row_num].strip(), 
                 
-
             if "[SELL DIALOG]" in _content[row_num]:
-                pass
+                self.sell_dialog()
+                row_num = previous_choice_row
 
             if "[BUY DIALOG]" in _content[row_num]:
                 self.buy_dialog()
+                row_num = previous_choice_row
 
             row_num += 1
 
         return self.player, "NO OUTCOME"
     
     def sell_dialog(self):
-        pass
+        value_decrease_percent = 0.5
+
+        while True:
+            #items = self.player.inventory
+
+            # Filter out money from items
+            items = []
+            for item in self.player.inventory:
+                if item[0] != Items.money:
+                    items.append(item)
+
+            if len(items) == 0:
+                print(f"{self.BAR} \n You have no items to sell! \n {self.BAR}")
+                break
+
+
+            print(self.BAR + "\n What do you wish to sell? \n" + self.BAR)
+            print(f"You have {self.player.calculate_wealth()} {Items.money.name} (s) \n {self.BAR}")
+
+            for x in range(len(items)):
+                item = items[x][0]
+                item_quantity = items[x][1]
+                if items[x][0] is not None  and hasattr(item, "value"):
+                    print(str(x + 1) + ": SELL " + item.name + " for " + str(math.floor(item.value * value_decrease_percent)) + " " + Items.money.name + "(s) | In inventory: " + str(item_quantity))
+            
+            print(f"{len(items) + 1}: EXIT \n {self.BAR}")
+
+            args = self.get_shop_input()
+
+            # Exit dialog
+            if int(args[0]) == len(items) + 1:
+                print(self.BAR)
+                break
+
+            item_id = int(args[0])
+            quantity = int(args[1])
+
+             # Check whether or not the given input was allowed
+            if int(item_id) > 0 and int(item_id) <= len(items):
+                if quantity > items[item_id-1][1]:
+                    print("You can't sell more than you own!")
+                    continue
+                item = items[item_id-1][0]
+                item_worth = math.floor(item.value * value_decrease_percent) * quantity
+                print(f"{self.BAR} \n Sold {quantity} {item.name} (s) for {item_worth} {Items.money.name} (s)")
+                self.player.remove_item(item, quantity)
+                self.player.add_item(Items.money, item_worth)
 
     def buy_dialog(self):
         while True:
             items = self.npc.items
+
+            if len(items) == 0:
+                print(f"{self.BAR} \n No items to buy! \n {self.BAR}")
+                break
             
             print(self.BAR + "\n What do you wish to buy? \n" + self.BAR)
+            print(f"You have {self.player.calculate_wealth()} {Items.money.name} (s) \n {self.BAR}")
 
+            # Print out buy options
             for x in range(len(items)):
-                if items[x][0] is not None  and hasattr(items[x][0], "value"):
-                    print(str(x + 1) + ": BUY " + items[x][0].name + " for " + str(items[x][0].value))
+                item = items[x][0]
+                item_quantity = items[x][1]
+                if item is not None  and hasattr(item, "value"):
+                    print(str(x + 1) + ": BUY " + item.name + " for " + str(item.value) + " " + Items.money.name + "(s) | In stock: " + str(item_quantity))
 
-            print(f"{len(items) + 1}: EXIT")
-            
-            command = input("> ")
+            print(f"{len(items) + 1}: EXIT \n {self.BAR}")
 
-            if self.is_int(command):
-                    value = int(command)
-            else: 
-                continue
+            args = self.get_shop_input()
+
+            # Exit dialog
+            if int(args[0]) == len(items) + 1:
+                print(self.BAR)
+                break
+
+            item_id = int(args[0])
+            quantity = int(args[1])
+            item = items[item_id-1][0]
 
             # Check whether or not the given input was allowed
-            if int(value) > 0 and int(value) <= len(items):
-                item_cost = items[value-1][0].value
+            if int(item_id) > 0 and int(item_id) <= len(items):
+                item_cost = item.value * quantity
                 player_wealth = self.player.calculate_wealth()
 
                 # Remove money from player if enough money for chosen item
@@ -86,15 +148,37 @@ class DialogReader:
                     continue
                 else:
                     self.player.remove_item(Items.money, item_cost)
-                    self.player.add_item(items[value-1])
-                    print(f"Bought {items[value-1][0].name} for {items[value-1][0].value}")
-                    self.npc.items.pop(value-1)
-
-            elif int(value) == len(items) + 1:
-                print("CLOSING BUY DIALOG")
-                break
+                    self.player.add_item(item, quantity)
+                    print(f"{self.BAR} \n Bought {quantity} {item.name} (s) for {item.value*quantity} {Items.money.name} (s)")
+                    self.npc.remove_item(item, quantity)
 
             #if self.player.inventory
+
+    def get_shop_input(self):
+        while True:
+            command = input("> ")
+            args = command.split()
+
+            # If only one argument was given, set item quantity to one
+            if len(args) == 1:
+                args.append("1")
+
+            args_are_numbers = True
+
+            for arg in args:
+                if not self.is_int(arg):
+                    args_are_numbers = False
+
+            # If there were wrong amount of arguments, restart the sell dialog
+            if not args_are_numbers or len(args) != 2:
+                print("Incorrect input. Correct way is -> [ACTION] [QUANTITY]")
+                continue
+            elif args[1] == 0:
+                print("You cant buy zero of item!")
+                continue
+            else:
+                break
+        return args
 
     # Prints text block from the given row number to the text section end. Returns the end row number.
     def print_text_block(self, from_row, content):

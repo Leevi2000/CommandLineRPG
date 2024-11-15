@@ -25,17 +25,37 @@ def main():
     while True:
         print_locations(current_node)
         command = ask_input()
-        if command in directions:
-            current_node = node_action(current_node, command, player)
+        if command[0] in directions:
+            current_node = node_action(current_node, command[0], player)
+        if command[0] == "LOOK" and command[1] in directions:
+            print_direction_detail(current_node, command[1])
             
+def print_direction_detail(node, direction):
+    directions = {
+        "NORTH": node.to_north,
+        "EAST": node.to_east,
+        "SOUTH": node.to_south,
+        "WEST": node.to_west
+    }
+
+    # Get the type if the direction exists in the dictionary, otherwise set type to None or a default value
+    entity = directions.get(direction)
+    if direction in directions and entity is not None and hasattr(entity, "entity_type"):
+        entity_type = entity.entity_type
+
+    if entity_type == "NPC" and entity is not None and hasattr(entity, "detailed_description"):
+        print(f"----------------- \n {entity.detailed_description}")
+
 
 
 def ask_input():
-    allowed_input = ["NORTH", "EAST", "SOUTH", "WEST", "INSPECT", "TAKE"]
+    allowed_input = ["NORTH", "EAST", "SOUTH", "WEST", "INSPECT", "TAKE", "LOOK", "INVENTORY"]
+    directions = ["NORTH", "EAST", "SOUTH", "WEST"]
 
     while True:
-        command = input("> ")
-        if command not in allowed_input:
+        command = input("> ").split()
+
+        if command[0] not in allowed_input and command[1] not in directions:
             continue
         else:
             break

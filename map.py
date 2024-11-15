@@ -31,6 +31,8 @@ class Map:
     south = "SOUTH"
     west = "WEST"
 
+
+    ##
     starting_house = Node("Home", 
                           "Home sweet home! I'll hope to settle there again someday!")
     neighbours_house = Node("Neighbour's house.", 
@@ -50,6 +52,8 @@ class Map:
     map_to_direction(town_center_area, NPCs.drunken_guard_of_windermere, west)
     map_to_direction(marketplace, alley, west)
     map_to_direction(alley, NPCs.rogue, north)
+    map_to_direction(marketplace, NPCs.trader_of_windermere, east)
 
 
-    #alley.to_north = NPCs.rogue
+
+    

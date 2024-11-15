@@ -1,0 +1,29 @@
+[TXT]
+{NPC}: Hello! Would you like to take a look at my items!
+[TXT END]
+
+[CHOICES]
+
+	BUY [BUY]
+
+	SELL [SELL]
+
+	EXIT [LEAVE]
+
+[CHOICES END]
+
+[BUY]
+
+	[BUY DIALOG]
+
+[SELL]
+
+	[SELL DIALOG]
+
+[LEAVE]
+
+[TXT]
+{NPC}: Feel free to come back! Bye.
+[TXT END]
+
+	[OUTCOME: LEAVE]

@@ -1,3 +1,5 @@
+from entity_list import *
+
 class Entity:
     entity_type = ""
     description = ""
@@ -13,19 +15,6 @@ class Node(Entity):
         self.detailed_description = detailed_desc
         items = []
 
-class NPC(Entity):
-    def __init__(self, hp = 1, attack_dmg = 1, name = "", speed = 1, appearance = "", dialog_path = "", excuse = ""):
-        self.hp = hp
-        self.attack_dmg = attack_dmg
-        self.name = name
-        self.speed = speed
-        self.appearance = appearance
-        self.dialog_path = "Dialogs\\" + dialog_path
-        self.entity_type = "NPC"
-        self.description = appearance
-        self.excuse = excuse
-        self.items = []
-
 class Item(Entity):
     def __init__(self, name = "", weight = 0.0, throw_dmg = 0, value = 0, description = ""):
         self.name = name
@@ -34,6 +23,40 @@ class Item(Entity):
         self.description = description
         self.entity_type = "Item"
         self.value = value
+
+class NPC(Entity):
+    def __init__(self, hp = 1, attack_dmg = 1, name = "", speed = 1, general_description = "", dialog_path = "", excuse = ""):
+        self.hp = hp
+        self.attack_dmg = attack_dmg
+        self.name = name
+        self.speed = speed
+        self.detailed_description = ""
+        self.dialog_path = "Dialogs\\" + dialog_path
+        self.entity_type = "NPC"
+        self.description = general_description
+        self.excuse = excuse
+        self.items = []
+
+    def remove_item(self, item = Item(), quantity = 1):
+        # If same item already in inventory, decrease the quantity
+        for x in range(len(self.items)):
+            if self.items[x][0] == item:
+                self.items[x][1] -= quantity
+                # It quantity goes zero, remove item from inventory
+                if self.items[x][1] <= 0:
+                    self.items.pop(x)
+
+    def add_item(self, item = Item(), quantity = 1):
+
+        # If same item already in inventory, increase the quantity
+        for x in range(len(self.items)):
+            if self.items[x][0] == item:
+                self.items[x][1] += quantity
+                return
+            
+        # If there wasn't similar item yet, append item to the list with quantity=1
+        self.items.append([item, quantity])
+
 
 class Weapon(Item):
     def __init__(self, name = "", weight = 0.0, throw_dmg = 0, value = 0, description = "", damage = 0.0, range = 0, attack_speed = 0):
@@ -48,12 +71,22 @@ class Weapon(Item):
         self.entity_type = "Weapon"
 
 class Armor(Item):
-    def __init__(self, defense):
+    def __init__(self,name = "", weight = 0.0, throw_dmg = 0, value = 0, description = "", defense = 0):
+        self.name = name
+        self.weight = weight
+        self.throw_dmg = throw_dmg
+        self.description = description
+        self.value = value
         self.defense = defense
         self.entity_type = "Armor"
 
 class Healing(Item):
-    def __init__(self, healing):
+    def __init__(self, name = "", weight = 0.0, throw_dmg = 0, value = 0, description = "", healing = 0):
+        self.name = name
+        self.weight = weight
+        self.throw_dmg = throw_dmg
+        self.description = description
+        self.value = value
         self.healing = healing
         self.entity_type = "Healing"
         
