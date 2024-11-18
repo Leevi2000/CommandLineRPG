@@ -1,15 +1,17 @@
 
 from entity_list import Items
-from objects import Item
+from objects import Item, Weapon
 import math
 
 class Player:
+    value_decrease_percent = 0.7
     def __init__(self, name=""):
         self.name = name
         self.inventory = [] # [item, quantity] pairs
         self.hp = 20
         self.defense = 1
         self.max_weight = 40
+        self.equipped_weapon = Weapon()
     
     def add_item(self, item = Item(), quantity = 1):
 
@@ -33,7 +35,7 @@ class Player:
                 # It quantity goes zero, remove item from inventory
                 if self.inventory[x][1] <= 0:
                     self.inventory.pop(x)
-            break
+                break
                 
     # Calculates player wealth based on amount of silver coins in the inventory
     def calculate_wealth(self):

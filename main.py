@@ -1,6 +1,4 @@
-from operator import le
-from turtle import clear
-from typing import Self
+import combat_system
 import entity_list
 import dialog
 from objects import Entity, Node
@@ -16,8 +14,9 @@ def main():
 
     player = Player("Player")
     player.add_item(Items.money, 40)
+    player.add_item(Items.leather_tunic, 10)
 
-    current_node = Map.starting_house
+    current_node = Map.alley
 
     print("-----------")
     cleaned_description = re.sub(r'\s+', ' ', current_node.detailed_description.strip())
@@ -126,12 +125,7 @@ def outcome_handler(outcome, npc_details, node, direction, player_detail = Playe
     print(str(outcome))
 
     if "ATTACK" in outcome:
-        # Attack logic
-        pass
-
-    if "TRADE" in outcome:
-        # Trade logic
-        pass
+        combat_system.start_combat(player_detail, npc_details, node)
 
     if "LEAVE" in outcome:
         # Exit
@@ -149,7 +143,6 @@ def outcome_handler(outcome, npc_details, node, direction, player_detail = Playe
         if npc_details.excuse != "":
             print(npc_details.name + ": " + npc_details.excuse)
             setattr(node, direction_map[direction], Entity())
-
 
     
 

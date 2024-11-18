@@ -10,7 +10,7 @@ class Items:
 
 # Holds list of different kind of NPC variables that can be used in game
 class NPCs:
-    rogue = NPC(5, 1, "Violent Rogue", 3, "Shady figure with tattered clothing", "rogue.txt", "I've got some other business to do, I'm leavin'")
+    rogue = NPC(10, 3, "Violent Rogue", 2, "Shady figure with tattered clothing", "rogue.txt", "I've got some other business to do, I'm leavin'")
     rogue.add_item(Items.rogue_dagger, 1)
 
     drunken_guard_of_windermere = NPC(1, 10, "Drunken Guard", 1, "Drunken Guard that looks like he is a hazard to himself", "drunken_guard_of_windermere.txt", "See you around, I gotta leave")
