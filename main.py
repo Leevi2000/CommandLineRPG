@@ -7,6 +7,9 @@ from dialog import DialogReader
 from map import Map
 import re
 from player import Player
+import player
+
+game_over = False
 
 def main():
     directions = ["NORTH", "EAST", "SOUTH", "WEST"]
@@ -23,6 +26,10 @@ def main():
     print(cleaned_description)
 
     while True:
+
+        if game_over:
+            break
+
         print_locations(current_node)
         command = ask_input()
         if command[0] in directions:
@@ -31,6 +38,8 @@ def main():
             print_direction_detail(current_node, command[1])
         if command[0] == "INVENTORY":
             player.print_inventory()
+        if command[0] == "STATS":
+            player.print_stats()
             
 def print_direction_detail(node, direction):
     directions = {
@@ -114,6 +123,7 @@ def print_locations(current_node):
             print(f"To the {x} you can see {directions.get(x).description}") # type: ignore
 
 def outcome_handler(outcome, npc_details, node, direction, player_detail = Player()):
+    global game_over
 
     direction_map = {
             "NORTH": "to_north",
@@ -122,10 +132,15 @@ def outcome_handler(outcome, npc_details, node, direction, player_detail = Playe
             "WEST": "to_west"
     }
 
-    print(str(outcome))
-
     if "ATTACK" in outcome:
-        combat_system.start_combat(player_detail, npc_details, node)
+        winner = combat_system.start_combat(player_detail, npc_details, node)
+        if winner == npc_details:
+            game_over = True
+            print_game_over(npc_details)
+            return
+        else:
+            return
+
 
     if "LEAVE" in outcome:
         # Exit
@@ -145,8 +160,9 @@ def outcome_handler(outcome, npc_details, node, direction, player_detail = Playe
             setattr(node, direction_map[direction], Entity())
 
     
-
-
+def print_game_over(enemy):
+    print(f"{combat_system.BAR}\nGame Over\n{combat_system.BAR}")
+    
 
 if __name__ == '__main__':
     main()

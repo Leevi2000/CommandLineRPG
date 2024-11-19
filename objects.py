@@ -1,4 +1,3 @@
-from entity_list import *
 import math
 
 class Entity:
@@ -53,7 +52,7 @@ class Node(Entity):
         self.items.append([item, quantity])
 
 class NPC(Entity):
-    def __init__(self, hp = 1, attack_dmg = 1, name = "", speed = 1, general_description = "", dialog_path = "", excuse = ""):
+    def __init__(self, hp = 1, attack_dmg = 1.0, name = "", speed = 1.0, general_description = "", dialog_path = "", excuse = ""):
         self.hp = hp
         self.attack_dmg = attack_dmg
         self.name = name
@@ -91,7 +90,7 @@ class NPC(Entity):
 
 
 class Weapon(Item):
-    def __init__(self, name = "", weight = 0.0, throw_dmg = 0, value = 0, description = "", damage = 0.0, attack_speed = 0):
+    def __init__(self, name = "", weight = 0.0, throw_dmg = 0, value = 0, description = "", damage = 0.0, attack_speed = 0.0):
         self.name = name
         self.weight = weight
         self.throw_dmg = throw_dmg
@@ -107,7 +106,7 @@ class Weapon(Item):
 
 
 class Armor(Item):
-    def __init__(self,name = "", weight = 0.0, throw_dmg = 0, value = 0, description = "", defense = 0):
+    def __init__(self,name = "", weight = 0.0, throw_dmg = 0, value = 0, description = "", defense = 0, armor_type = ""):
         self.name = name
         self.weight = weight
         self.throw_dmg = throw_dmg
@@ -115,6 +114,7 @@ class Armor(Item):
         self.value = value
         self.defense = defense
         self.entity_type = "Armor"
+        self.armor_type = armor_type
 
     def get_details(self):
         details = f"Defense: {str(self.defense)}"
