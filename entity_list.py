@@ -12,10 +12,16 @@ class Items:
     apple = Healing("Apple", 0.2, 1, 3, "Looks so delicious that you could eat it straight away", 2)
     leather_tunic = Armor("Leather tunic", 3, 0, 10, "A piece of armor, looks comfortable", 2, "chest")
 
+    bilberry = Healing("Bilberry", 0.1, 0, 2, "Small, tasty berry", 1)
+
 
 # Holds list of different kind of NPC variables that can be used in game
 class NPCs:
     from objects import NPC
+
+    # --------------------------------
+    # Town of Windermere NPC's
+    # --------------------------------
     rogue = NPC(6, Items.rogue_dagger.damage, "Violent Rogue", 2, "Shady figure with tattered clothing", "rogue.txt", "I've got some other business to do, I'm leavin'")
     rogue.add_item(Items.rogue_dagger, 1)
 
@@ -25,3 +31,7 @@ class NPCs:
     trader_of_windermere.add_item(Items.apple, 3)
     trader_of_windermere.add_item(Items.leather_tunic, 1)
     trader_of_windermere.detailed_description = "He has a fancy moustache, dark cloak and worn out leather boots."
+
+
+
+

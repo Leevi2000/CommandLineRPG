@@ -14,7 +14,7 @@ def start_combat(player, enemy, node):
     return handle_command(player, enemy, node)
 
 def handle_command(player, enemy, node):
-    input_choices = ["THROW", "USE", "INVENTORY", "FLEE", "EQUIP", "ATTACK"]
+    input_choices = ["THROW", "USE", "INVENTORY", "EQUIP", "ATTACK"]
 
     if player.equipped_weapon.name == "":
             player.equipped_weapon = Items.fists
@@ -47,12 +47,11 @@ def handle_command(player, enemy, node):
         if "INVENTORY" in i:
             player.print_inventory()
         if "EQUIP" in i:
-            equip_item(player)
+            player.equip_item()
         if "ATTACK" in i:
             attack_logic(player, enemy)
-
         if "USE" in i:
-            use_item(player)
+            player.use_item()
 
 def check_for_winner(player, enemy):
     if player.hp > 0 and enemy.hp <= 0:
@@ -90,11 +89,12 @@ def attack_logic(player, enemy):
 
 # Reduces hp from creature and returns False is creature dies
 def damage_creature(creature, damage, enemy = objects.NPC()):
-
+    
     if type(creature) == objects.NPC:
         print(f"You deal {damage} damage to the {creature.name}!")
 
     if type(creature) == player.Player:
+        damage = damage - round(creature.defense/2, 2)
         print(f"You take {damage} damage from {enemy.name}!")
 
     creature.hp -= damage
@@ -103,40 +103,8 @@ def damage_creature(creature, damage, enemy = objects.NPC()):
         return False
     return True
 
-def equip_item(player = Player()):
-    items = get_items_of_type(player, ["Weapon", "Armor"])
-    items.append([Items.fists, 1])
-    items.sort(key=lambda item: item[0].entity_type)
-    selected_item = select_item(items)
-
-    # If player didn't choose an item to throw, go back into action selection
-    if selected_item == -1:
-        return
-    
-    if selected_item.entity_type == "Weapon":
-        player.equipped_weapon = selected_item
-        print(f"{BAR} \n Equipped {selected_item.name}, with ATK: {selected_item.damage}")
-        return
-    
-    player.equip_armor(selected_item)
-    print(f"{BAR} \n Equipped {selected_item.name}, with DEF: {selected_item.defense} \n Total DEF: {player.defense}")
-    
-def use_item(player = Player()):
-    items = get_items_of_type(player, ["Healing"])
-    selected_item = select_item(items)
-
-    # If player didn't choose an item to throw, go back into action selection
-    if selected_item == -1:
-        return
-
-    player.remove_item(selected_item)
-    player.heal(selected_item.healing)
-
-    print(f"Healed {selected_item.healing} points. Your hp is now {player.hp}")
-
-
 def throw_item(player = Player(), enemy = NPC(), node = Node):
-    items = get_items_of_type(player)
+    items = player.get_items_of_type()
     selected_item = select_item(items)
 
     # If player didn't choose an item to throw, go back into action selection
@@ -194,8 +162,7 @@ def print_item_list(items):
     if len(items) == 0:
         print("No items to choose from!")
 
-
-    print(f"{len(items) + 1}: Go back to action selection")
+    print(f"{len(items) + 1}: Go back")
 
 def print_stats(player):
     #Print HP, equipped weapon + its damage and speed, defense points

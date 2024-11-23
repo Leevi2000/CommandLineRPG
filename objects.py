@@ -26,6 +26,7 @@ class Node(Entity):
         self.to_east = Entity()
         self.entity_type = "Node"
         self.detailed_description = detailed_desc
+        self.npc_on_enter = NPC()
 
         # Dropped items and perhaps other items also can be stored here
         self.items = []

@@ -1,4 +1,5 @@
 import combat_system
+import common_operations
 import entity_list
 import dialog
 from objects import Entity, Node
@@ -40,6 +41,14 @@ def main():
             player.print_inventory()
         if command[0] == "STATS":
             player.print_stats()
+        if command[0] == "EQUIP":
+            player.equip_item()
+        if command[0] == "USE":
+            player.use_item()
+        if command[0] == "TAKE":
+            take_items_on_node(current_node, player)
+        if command[0] == "INSPECT":
+            print_amount_of_items(current_node)
             
 def print_direction_detail(node, direction):
     directions = {
@@ -57,7 +66,8 @@ def print_direction_detail(node, direction):
     if entity_type == "NPC" and entity is not None and hasattr(entity, "detailed_description"):
         print(f"----------------- \n {entity.detailed_description}")
 
-
+def print_amount_of_items(node):
+    print(f"There are {len(node.items)} items nearby")
 
 def ask_input():
     allowed_input = ["NORTH", "EAST", "SOUTH", "WEST", "INSPECT", "TAKE", "LOOK", "INVENTORY"]
@@ -80,6 +90,8 @@ def ask_input():
 def node_action(current_node, command, player_detail):
     node = current_node
     entity_type = ""
+    npc_on_node = False
+
     directions = {
         "NORTH": current_node.to_north,
         "EAST": current_node.to_east,
@@ -89,6 +101,7 @@ def node_action(current_node, command, player_detail):
 
     # Get the type if the direction exists in the dictionary, otherwise set type to None or a default value
     entity = directions.get(command)
+    npc = directions.get(command)
     if command in directions and entity is not None and hasattr(entity, "entity_type"):
         entity_type = entity.entity_type
 
@@ -97,16 +110,29 @@ def node_action(current_node, command, player_detail):
         print("-----------")
         cleaned_description = re.sub(r'\s+', ' ', entity.detailed_description.strip())
         print(cleaned_description)
+        if entity.npc_on_enter.name != "":
+            npc_on_node = True
+            npc = entity.npc_on_enter.name
 
-    if entity_type == "NPC":
+    if entity_type == "NPC" or npc_on_node:
         reader = DialogReader()
-        outcome = reader.read_dialog(entity, player_detail)
+        outcome = reader.read_dialog(npc, player_detail)
         player_detail = outcome[0]
-
-        outcome_handler(outcome[1], entity, node, command, player_detail)
+        outcome_handler(outcome[1], npc, node, player_detail, command)
         
     # Return node + player
     return node
+
+def take_items_on_node(node, player):
+    while True:
+        item = common_operations.select_item(node.items)
+
+        if item == -1:
+            return
+        
+        node.remove_item(item)
+        player.add_item(item)
+
     
 def print_locations(current_node):
 
@@ -122,7 +148,8 @@ def print_locations(current_node):
         if entity_type != "":
             print(f"To the {x} you can see {directions.get(x).description}") # type: ignore
 
-def outcome_handler(outcome, npc_details, node, direction, player_detail = Player()):
+
+def outcome_handler(outcome, npc_details, node, player_detail = Player(), direction = ""):
     global game_over
 
     direction_map = {

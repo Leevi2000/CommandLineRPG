@@ -1,14 +1,17 @@
 
+import common_operations
 from entity_list import Items
 from objects import Armor, Item, Weapon
 import math
+
+BAR = "-----------------"
 
 class Player:
     value_decrease_percent = 0.7
     def __init__(self, name=""):
         self.name = name
         self.inventory = [] # [item, quantity] pairs
-        self.hp = 20
+        self.hp = 20.0
         self.defense = 0
         self.max_weight = 40
         self.equipped_weapon = Weapon()
@@ -60,6 +63,7 @@ class Player:
                     # Change the value of the found key to a new Armor() instance
                     self.armor[key] = Armor()
                     break
+                
 
     # Calculates player wealth based on amount of silver coins in the inventory
     def calculate_wealth(self):
@@ -98,6 +102,64 @@ class Player:
         print(f"Carrying: {total_weight} kg(s) of {self.max_weight} kg(s) maximum")
         
 
+    def get_items_of_type(self, filterList = [""]):
+    
+        all_items = self.inventory
+    
+        if filterList[0] == "":
+            return all_items
+
+        filtered_items = []
+
+        for item in all_items:
+                if item[0].entity_type in filterList:
+                    filtered_items.append(item)
+
+        return filtered_items
+    
+    
+    def print_item_list(self, items):
+        for x in range(len(items)):
+            print(f"{x + 1}: {items[x][0].name}, {items[x][0].get_details()}")
+
+        if len(items) == 0:
+            print("No items to choose from!")
+            return False
+
+        print(f"{len(items) + 1}: Go back")
+        return True
+
+    def use_item(self):
+        items = self.get_items_of_type(["Healing"])
+        selected_item = common_operations.select_item(items)
+
+        # If player didn't choose an item to throw, go back into action selection
+        if selected_item == -1:
+            return
+
+        self.remove_item(selected_item)
+        self.heal(selected_item.healing)
+
+        print(f"Healed {selected_item.healing} points. Your hp is now {self.hp}")
+
+    def equip_item(self):
+        items = self.get_items_of_type(["Weapon", "Armor"])
+        items.append([Items.fists, 1])
+        items.sort(key=lambda item: item[0].entity_type)
+        selected_item = common_operations.select_item(items)
+
+        # If player didn't choose an item to throw, go back into action selection
+        if selected_item == -1:
+            return
+        
+        if selected_item.entity_type == "Weapon":
+            self.equipped_weapon = selected_item
+            print(f"{BAR} \n Equipped {selected_item.name}, with ATK: {selected_item.damage}")
+            return
+        
+        self.equip_armor(selected_item)
+        print(f"{BAR} \n Equipped {selected_item.name}, with DEF: {selected_item.defense} \n Total DEF: {self.defense}")
+    
 
         
         
