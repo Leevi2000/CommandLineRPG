@@ -1,0 +1,75 @@
+[TXT]
+{NPC}: ...
+[TXT END]
+
+[CHOICES]
+
+Hello? Who are you? [TALK_1]
+
+Do you know what is in the east? [TALK_2]
+
+Why are you carrying that rock? [TALK_3]
+
+Goodbye, I must continue [TALK_4]
+
+[CHOICES END]
+
+[TALK_1]
+	[TXT]
+	{NPC}: ... That won't matter
+	[TXT END]
+
+	[CONTINUE]
+
+[TALK_2]
+	[TXT]
+	{NPC}: There... have been numerous goblin raids. Castle of Greyhold has fallen. You better be careful if you're going that way.
+	[TXT END]
+
+	[CONTINUE]
+
+[TALK_3]
+	[TXT]
+	{NPC}: This stone... is just an ordinary stone.
+	[TXT END]
+
+	[CHOICES]
+
+	Can I take a look at the stone? [STONE]
+
+	Cool (No wonder he lives here, the guy is crazy) [TALK_4]
+
+	[CHOICES END]
+
+[STONE]
+	[TXT]
+	{NPC}: NO!
+	[TXT END]
+
+	[CHOICES]
+
+	Okay, then. [TALK_4]
+	
+	I will take that by force! [ATTACK]
+
+	[CHOICES END]
+
+[TALK_4]
+	[TXT]
+	{NPC}: Bye...
+	[TXT END]
+
+	[OUTCOME: LEAVE]
+
+[ATTACK]
+	[TXT]
+	{NPC}: ... You shall suffer!
+	*The stone starts glowing in hands of the {NPC}, the air gets dense*
+	[TXT END]
+
+	[OUTCOME: ATTACK]
+
+
+
+	
+

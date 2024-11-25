@@ -1,5 +1,7 @@
 
 import random
+from common_operations import BAR, print_with_readtime
+import common_operations
 import objects
 from player import Player
 from objects import *
@@ -7,7 +9,7 @@ from entity_list import *
 import player
 
 
-BAR = "---------------------"
+
 
 def start_combat(player, enemy, node):
     print(f"{BAR} \n Combat started!")
@@ -16,26 +18,39 @@ def start_combat(player, enemy, node):
 def handle_command(player, enemy, node):
     input_choices = ["THROW", "USE", "INVENTORY", "EQUIP", "ATTACK"]
 
+    shortcut_input = {
+        "INV": "INVENTORY",
+        "T": "THROW",
+        "EQ": "EQUIP",
+        "U": "USE",
+        "A": "ATTACK",
+        "E": "EQUIP"
+    }
+
     if player.equipped_weapon.name == "":
             player.equipped_weapon = Items.fists
 
     # EQUIP should be for armor and weapons
     # USE for hp items
     while True:
-
         winner = check_for_winner(player, enemy)
         if winner != -1:
             if winner == player:
-                print(f"You have slain {enemy.name}!")
+                print_with_readtime(f"You have slain {enemy.name}!")
             if winner == enemy:
-                print(f"You died to {enemy.name}!")
+                print_with_readtime(f"You died to {enemy.name}!")
             return winner
         
         player.print_stats()
         print(f" {enemy.name} HP left: {enemy.hp}")
 
-        print(f"{BAR} \n Enter a command! (Possible commands: THROW, USE, INVENTORY, FLEE, EQUIP, ATTACK) \n {BAR}")
-        i = input("> ") 
+        print(f"{BAR} \n Enter a command! (Possible commands: THROW, USE, INVENTORY, EQUIP, ATTACK) \n {BAR}")
+        i = input("> ").upper()
+
+        for key, value in shortcut_input.items():
+            if i == key:
+                i = value
+                break
 
         if i not in input_choices:
             continue
@@ -43,7 +58,7 @@ def handle_command(player, enemy, node):
         if "THROW" in i:
             success = throw_item(player, enemy, node)
             if not success:
-                damage_creature(player, enemy.attack_dmg)
+                damage_creature(player, enemy.attack_dmg, enemy)
         if "INVENTORY" in i:
             player.print_inventory()
         if "EQUIP" in i:
@@ -63,19 +78,19 @@ def check_for_winner(player, enemy):
 
 def attack_logic(player, enemy):
 
-    print(f"{BAR} \nYou attack with a {player.equipped_weapon.name}")
+    print_with_readtime(f"{BAR} \nYou attack with a {player.equipped_weapon.name}")
 
     enemy_alive = True
     player_alive = True
     # If player time to attack is smaller, deal damage to enemy first
     if enemy.speed >= player.equipped_weapon.attack_speed:
-        print("You are quicker to strike!")        
+        print_with_readtime("You are quicker to strike!")        
         enemy_alive = damage_creature(enemy, player.equipped_weapon.damage)
         if enemy_alive:
             player_alive = damage_creature(player, enemy.attack_dmg, enemy)
     # If enemy is faster to attack, player takes damage first
     else:
-        print(f"{enemy.name} is quicker to strike!")
+        print_with_readtime(f"{enemy.name} is quicker to strike!")
         player_alive = damage_creature(player, enemy.attack_dmg, enemy)
         if player_alive:
             enemy_alive = damage_creature(enemy, player.equipped_weapon.damage)
@@ -91,11 +106,11 @@ def attack_logic(player, enemy):
 def damage_creature(creature, damage, enemy = objects.NPC()):
     
     if type(creature) == objects.NPC:
-        print(f"You deal {damage} damage to the {creature.name}!")
+        print_with_readtime(f"You deal {damage} damage to the {creature.name}!")
 
     if type(creature) == player.Player:
         damage = damage - round(creature.defense/2, 2)
-        print(f"You take {damage} damage from {enemy.name}!")
+        print_with_readtime(f"You take {damage} damage from {enemy.name}!")
 
     creature.hp -= damage
 
@@ -105,7 +120,7 @@ def damage_creature(creature, damage, enemy = objects.NPC()):
 
 def throw_item(player = Player(), enemy = NPC(), node = Node):
     items = player.get_items_of_type()
-    selected_item = select_item(items)
+    selected_item = common_operations.select_item(items)
 
     # If player didn't choose an item to throw, go back into action selection
     if selected_item == -1:
@@ -114,19 +129,23 @@ def throw_item(player = Player(), enemy = NPC(), node = Node):
     player.remove_item(selected_item)
     node.add_item(selected_item)
 
+    if player.equipped_weapon == selected_item and player.equipped_weapon not in player.inventory[0]:
+        player.equipped_weapon = Items.fists
+
+    if selected_item not in player.inventory and selected_item in player.armor.values():
+        player.unequip_armor(selected_item)
+
     hit_probability = get_hit_probability(selected_item) * 100
     value = random.randrange(0, 100)
  
-    print(f"Throwing {selected_item.name} | Chance of hitting: {round(hit_probability, 2)} %")
+    print_with_readtime(f"Throwing {selected_item.name} | Chance of hitting: {round(hit_probability, 2)} %")
 
     if value <= hit_probability:
         enemy.take_damage(selected_item.throw_dmg)
-        node.add_item(selected_item)
-        print(f"Throw successful! {enemy.name} took {selected_item.throw_dmg} damage!")
+        print_with_readtime(f"Throw successful! {enemy.name} took {selected_item.throw_dmg} damage!")
         return True
     else:
-        node.add_item(selected_item)
-        print(f"Throw failed!")
+        print_with_readtime(f"Throw failed!")
         return False
     
 def get_hit_probability(item):
@@ -136,34 +155,6 @@ def get_hit_probability(item):
         hit_probability = 1.0
     return hit_probability
      
-def select_item(items):
-    while True:
-        print_item_list(items)
-        i = input(f"{BAR} \n Select item > ")
-
-        try:
-            int(i)
-        except:
-            continue
-
-        if int(i) == len(items) + 1:
-            return -1
-
-        if int(i) > len(items) or int(i) < 1:
-            continue
-
-        item = items[int(i) - 1][0]
-        return item
-#if items == hasattr(items, )
-def print_item_list(items):
-    for x in range(len(items)):
-        print(f"{x + 1}: {items[x][0].name}, {items[x][0].get_details()}")
-
-    if len(items) == 0:
-        print("No items to choose from!")
-
-    print(f"{len(items) + 1}: Go back")
-
 def print_stats(player):
     #Print HP, equipped weapon + its damage and speed, defense points
     print(f"{BAR} \n HP: {player.hp} | DEF: {player.defense} | Equipped weapon: {player.equipped_weapon.name}, DMG: {player.equipped_weapon.damage}, DMG: {player.equipped_weapon.attack_speed} \n {BAR}")

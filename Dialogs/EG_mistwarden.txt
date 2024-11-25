@@ -1,0 +1,7 @@
+[TXT]
+*The ground trembles*
+{NPC}: No-one shall enter the vicinity of the Mistspire Tree!
+*The {NPC} furiously pulls something from the depths of their cloak, glowing mist seeping from their eyes as they move.*
+[TXT END]
+
+	[OUTCOME: ATTACK]

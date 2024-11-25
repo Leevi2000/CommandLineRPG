@@ -1,0 +1,30 @@
+[TXT]
+{NPC}: .̴̧̡̹̻̝̲̹͍̰͉̜̦̿̀͋̂̐̈́̈͆̕̚͠.̸̬͚̫͈̏́.̶̨̫̱͍͍̜̥̟̊́̌̎͗̐̈̚̚
+[TXT END]
+
+[CHOICES]
+
+	Why are you here? [TALK_1]
+
+	*Attack* [ATTACK]
+
+	See you [LEAVE]
+
+[CHOICES END]
+
+[TALK_1]
+	[TXT]
+	{NPC}: .̴̧̡̹̻̝̲̹͍̰͉̜̦̿̀͋̂̐̈́̈͆̕̚͠.̸̬͚̫͈̏́.̶̨̫̱͍͍̜̥̟̊́̌̎͗̐̈̚̚
+	[TXT END]
+
+	[CONTINUE]
+
+[ATTACK]
+	[TXT]
+	{NPC}: d̵̛̛̟͎̬̟̞͖͙̭͉͔͖̆̏̎͌́̿̀̂̆̆͜͠i̵̡̛̟̫̮̱̺̺̥̟̻̥̓͐ȩ̴̜͕̬͍̲͇̘̰͖̝̤͉̎́̀͜͠!̴͚̰̜͉̼̗̼͙̫͉̼̫͔̅͆̽̓̚
+	[TXT END]
+
+	[OUTCOME: ATTACK]
+
+[LEAVE]
+	[OUTCOME: LEAVE]

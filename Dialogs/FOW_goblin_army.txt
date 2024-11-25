@@ -1,0 +1,5 @@
+[TXT]
+{NPC}: Hehehehee! Prepare to get sliced! We will take care of your items!
+[TXT END]
+
+[OUTCOME: ATTACK]

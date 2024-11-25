@@ -1,3 +1,4 @@
+from common_operations import BAR, print_with_readtime
 import entity_list
 from player import Player
 from objects import *
@@ -11,7 +12,6 @@ class Dialog:
         self.relatedItems = relatedItems
 
 class DialogReader:
-    BAR = "---------------------"
     player = Player()
     npc = NPC()
 
@@ -22,7 +22,7 @@ class DialogReader:
 
         path = npc_details.dialog_path
 
-        file = open(str(path), "r")
+        file = open(str(path), "r", encoding="utf8")
         _content = file.readlines()
         file.close()
         for x in range(len(_content)):
@@ -33,9 +33,9 @@ class DialogReader:
         previous_choice_row = 0
         while row_num < len(_content):
             if "[TXT]" in _content[row_num]:
-                print(self.BAR)
+                print(BAR)
                 row_num = self.print_text_block(row_num + 1, _content)
-                print(self.BAR)
+                print(BAR)
 
             if "[CHOICES]" in _content[row_num]:
                 previous_choice_row = row_num - 1
@@ -51,6 +51,9 @@ class DialogReader:
                 self.buy_dialog()
                 if "[OUTCOME:" in _content[row_num]:
                     return self.player, _content[row_num].strip()
+                row_num = previous_choice_row
+
+            if "[CONTINUE]" in _content[row_num]:
                 row_num = previous_choice_row
 
             if "[OUTCOME:" in _content[row_num]:
@@ -69,15 +72,16 @@ class DialogReader:
                     items.append(item)
 
             if len(items) == 0:
-                print(f"{self.BAR} \n You have no items to sell! \n {self.BAR}")
+                msg = f"{BAR} \n You have no items to sell! \n {BAR}"
+                print_with_readtime(msg)
                 break
 
-            print(self.BAR + "\n What do you wish to sell? \n" + self.BAR)
-            print(f"You have {self.player.calculate_wealth()} {Items.money.name} (s) \n {self.BAR}")
+            print(BAR + "\n What do you wish to sell? \n" + BAR)
+            print(f"You have {self.player.calculate_wealth()} {Items.money.name} (s) \n {BAR}")
 
             self.print_out_trade_options(items, True)
 
-            print(f"{len(items) + 1}: EXIT \n {self.BAR}")
+            print(f"{len(items) + 1}: EXIT \n {BAR}")
 
             args = self.get_shop_input()
 
@@ -97,15 +101,15 @@ class DialogReader:
             items = self.npc.items
 
             if len(items) == 0:
-                print(f"{self.BAR} \n No items to buy! \n {self.BAR}")
+                print(f"{BAR} \n No items to buy! \n {BAR}")
                 break
             
-            print(self.BAR + "\n What do you wish to buy? \n" + self.BAR)
-            print(f"You have {self.player.calculate_wealth()} {Items.money.name} (s) \n {self.BAR}")
+            print(BAR + "\n What do you wish to buy? \n" + BAR)
+            print(f"You have {self.player.calculate_wealth()} {Items.money.name} (s) \n {BAR}")
 
             self.print_out_trade_options(items)
 
-            print(f"{len(items) + 1}: EXIT \n {self.BAR}")
+            print(f"{len(items) + 1}: EXIT \n {BAR}")
 
             args = self.get_shop_input()
 
@@ -115,7 +119,7 @@ class DialogReader:
             item_id, quantity, item = self.return_trade_arguments(args, items)
             if item_id == -1:
                 continue
-            msg = f"{self.BAR} \n You can't buy more than there is stock!"
+            msg = f"{BAR} \n You can't buy more than there is stock!"
             if self.validate_trade_input(items, item_id, quantity, msg):
                 if not self.buy_procedure(item, quantity):
                     continue
@@ -123,7 +127,7 @@ class DialogReader:
     def exit_trade_input(self, args, items):
         # Exit dialog
         if int(args[0]) == len(items) + 1:
-                print(self.BAR)
+                print(BAR)
                 return True
         return False
 
@@ -141,13 +145,13 @@ class DialogReader:
         # Check whether or not the given input was allowed
         if int(item_id) > 0 and int(item_id) <= len(items):
             if quantity > items[item_id-1][1]:
-                print(error_msg)
+                print_with_readtime(error_msg)
                 return False
         return True
 
     def sell_procedure(self, item, quantity):
             item_worth = math.floor(item.value * self.player.value_decrease_percent) * quantity
-            print(f"{self.BAR} \n Sold {quantity} {item.name} (s) for {item_worth} {Items.money.name} (s)")
+            print(f"{BAR} \n Sold {quantity} {item.name} (s) for {item_worth} {Items.money.name} (s)")
             self.player.remove_item(item, quantity)
             self.player.add_item(Items.money, item_worth)
         
@@ -159,23 +163,28 @@ class DialogReader:
 
         # Remove money from player if enough money for chosen item
         if item_cost > player_wealth:
-            print("Not enough money")
+            print_with_readtime("Not enough money")
+            return False
+        elif self.player.weight_overload(item.weight * quantity):
+            print_with_readtime("You can't carry that much!")
             return False
         else:
             self.player.remove_item(Items.money, item_cost)
             self.player.add_item(item, quantity)
-            print(f"{self.BAR} \n Bought {quantity} {item.name} (s) for {item.value*quantity} {Items.money.name} (s)")
+            print(f"{BAR} \n Bought {quantity} {item.name} (s) for {item.value*quantity} {Items.money.name} (s)")
             self.npc.remove_item(item, quantity)
             return True
 
     def print_out_trade_options(self, items, player_is_selling = False):
         # Print out buy options
+            weight_info = self.player.get_carried_weight_string()
+            print(f"{weight_info} \n {BAR}")
             for x in range(len(items)):
                 item = items[x][0]
                 item_quantity = items[x][1]
                 if item is not None  and hasattr(item, "value"):
-                    npc_to_player_str = str(x + 1) + ": BUY " + item.name + " for " + str(item.value) + " " + Items.money.name + "(s) | In stock: " + str(item_quantity)
-                    player_to_npc_str = str(x + 1) + ": SELL " + item.name + " for " + str(math.floor(item.value * self.player.value_decrease_percent)) + " " + Items.money.name + "(s) | In inventory: " + str(item_quantity)
+                    npc_to_player_str = str(x + 1) + ": BUY " + item.name + " for " + str(item.value) + " " + Items.money.name + "(s) | In stock: " + str(item_quantity) +  " | Weight: " + str(item.weight) + " kg(s)"
+                    player_to_npc_str = str(x + 1) + ": SELL " + item.name + " for " + str(math.floor(item.value * self.player.value_decrease_percent)) + " " + Items.money.name + "(s) | In inventory: " + str(item_quantity) +  " | Weight: " + str(item.weight) + " kg(s)"
                     if(player_is_selling):
                         print(player_to_npc_str)
                     else:
@@ -207,10 +216,10 @@ class DialogReader:
 
             # If there were wrong amount of arguments, restart the sell dialog
             if not args_are_numbers or len(args) != 2:
-                print("Incorrect input. Correct way is -> [ACTION] [QUANTITY]")
+                print_with_readtime("Incorrect input. Correct way is -> [ACTION] [QUANTITY]")
                 continue
             elif args[1] == 0:
-                print("You cant buy zero of item!")
+                print_with_readtime("You cant buy zero of item!")
                 continue
             else:
                 break
@@ -223,7 +232,7 @@ class DialogReader:
         while row < len(content):
             row_txt = content[row]
             if "[TXT END]" not in row_txt:
-                print(content[row].strip())
+                print_with_readtime(content[row].strip())
                 row += 1
             else:
                 return int(row + 1)
@@ -264,7 +273,7 @@ class DialogReader:
             if value > 0 and value <= len(options):
                 break
             else: 
-                print("Bad input! Try again.")
+                print_with_readtime("Bad input! Try again.")
 
         return int(self.find_next_row_with_txt(options[value-1][1], row, content))  
     
@@ -272,7 +281,7 @@ class DialogReader:
         try:
             value = int(given_string)
         except ValueError:
-            print("Bad input! Try again.")
+            print_with_readtime("Bad input! Try again.")
             return False
         
         return True
@@ -282,8 +291,7 @@ class DialogReader:
 
         while new_row < len(content):
             row_txt = content[new_row].strip('\n')
-            if txt not in row_txt:
-                
+            if txt != row_txt:
                 new_row += 1
             else:
                 return int(new_row)

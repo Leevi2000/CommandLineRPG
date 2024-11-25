@@ -1,0 +1,46 @@
+[TXT]
+{NPC}: Who do we have here! It has been ages since anyone has showed up around here.
+       Many avoid this place like plaque.
+[TXT END]
+
+[CHOICES]
+
+	What are you? [TALK_1]
+
+	Are there any dangers? [TALK_2]
+
+	I don't trust you! *ATTACK* [TALK_3]
+
+	Goodbye [TALK_4]
+
+[CHOICES END]
+
+[TALK_1]
+	[TXT]
+	{NPC}: I once was just like you, an adventurer without a destination.
+	       Too bad my greed won over as I tried to obtain the Heart of the Mistspire
+	[TXT END]
+
+	[CONTINUE]
+
+[TALK_2]
+	[TXT]
+	{NPC}: I warn you about the Giant Mistspire Tree. I recommend avoiding that place at all cost.
+	       Wanting to explore that place would need many men.
+		
+	       Other than that, the things around here are fairly peaceful.
+	[TXT END]
+
+	[CONTINUE]
+
+[TALK_3]
+	[TXT]
+	{NPC}: Haha! Wish that would work.
+	*{NPC} dissolves into the air for a moment... After that the spectral being appears behind you*
+	{NPC}: No need to be aggressive!
+	[TXT END]
+
+	[CONTINUE]
+
+[TALK_4]
+	[OUTCOME: LEAVE]

@@ -2,7 +2,7 @@ import combat_system
 import common_operations
 import entity_list
 import dialog
-from objects import Entity, Node
+from objects import NPC, Entity, Node
 from entity_list import Items, NPCs
 from dialog import DialogReader
 from map import Map
@@ -18,16 +18,15 @@ def main():
 
     player = Player("Player")
     player.add_item(Items.money, 40)
-    player.add_item(Items.leather_tunic, 10)
+    player.add_item(Items.godsword)
 
-    current_node = Map.alley
+    current_node = Map.starting_house
 
     print("-----------")
     cleaned_description = re.sub(r'\s+', ' ', current_node.detailed_description.strip())
     print(cleaned_description)
 
     while True:
-
         if game_over:
             break
 
@@ -49,6 +48,8 @@ def main():
             take_items_on_node(current_node, player)
         if command[0] == "INSPECT":
             print_amount_of_items(current_node)
+        if command[0] == "DROP":
+            drop_on_node(current_node, player)
             
 def print_direction_detail(node, direction):
     directions = {
@@ -67,18 +68,41 @@ def print_direction_detail(node, direction):
         print(f"----------------- \n {entity.detailed_description}")
 
 def print_amount_of_items(node):
-    print(f"There are {len(node.items)} items nearby")
+    amount = 0
+    for item in node.items:
+        amount += item[1]
+    print(f"There are {amount} items nearby")
 
 def ask_input():
-    allowed_input = ["NORTH", "EAST", "SOUTH", "WEST", "INSPECT", "TAKE", "LOOK", "INVENTORY"]
+    allowed_input = ["NORTH", "EAST", "SOUTH", "WEST", "INSPECT", "TAKE", "LOOK", "INVENTORY", "DROP", "EQUIP"]
     directions = ["NORTH", "EAST", "SOUTH", "WEST", "NONE"]
 
+    shortcut_input = {
+        "N": "NORTH",
+        "E": "EAST",
+        "S": "SOUTH",
+        "W": "WEST",
+        "T": "TAKE",
+        "INV": "INVENTORY",
+        "INS": "INSPECT",
+        "L": "LOOK",
+        "D": "DROP",
+        "EQ": "EQUIP",
+        "U": "USE"
+    }
+
     while True:
-        command = input("> ").split()
+        command = input("> ").upper().split()
+
         if len(command) == 1:
             command.append("NONE")
         if len(command) != 2:
             continue
+
+        for key, value in shortcut_input.items():
+            if command[0] == key:
+                command[0] = value
+                break
 
         if command[0] not in allowed_input and command[1] not in directions:
             continue
@@ -99,6 +123,11 @@ def node_action(current_node, command, player_detail):
         "WEST": current_node.to_west
     }
 
+    if player_detail.weight_overload():
+        print("Too tired to move. Items weigh too much. Maybe it's time to drop something...")
+        drop_on_node(current_node, player_detail)
+        return current_node
+
     # Get the type if the direction exists in the dictionary, otherwise set type to None or a default value
     entity = directions.get(command)
     npc = directions.get(command)
@@ -107,12 +136,12 @@ def node_action(current_node, command, player_detail):
 
     if entity_type == "Node" and entity is not None and hasattr(entity, "detailed_description"):
         node = entity
-        print("-----------")
+        print(common_operations.BAR)
         cleaned_description = re.sub(r'\s+', ' ', entity.detailed_description.strip())
         print(cleaned_description)
         if entity.npc_on_enter.name != "":
             npc_on_node = True
-            npc = entity.npc_on_enter.name
+            npc = entity.npc_on_enter
 
     if entity_type == "NPC" or npc_on_node:
         reader = DialogReader()
@@ -123,6 +152,11 @@ def node_action(current_node, command, player_detail):
     # Return node + player
     return node
 
+def drop_on_node(node, player):
+    items = player.drop_items()
+    for item in items:
+        node.add_item(item)
+
 def take_items_on_node(node, player):
     while True:
         item = common_operations.select_item(node.items)
@@ -130,10 +164,12 @@ def take_items_on_node(node, player):
         if item == -1:
             return
         
-        node.remove_item(item)
-        player.add_item(item)
+        if not player.weight_overload(item.weight):
+            player.add_item(item)
+            node.remove_item(item)
+        else:
+            common_operations.print_with_readtime("The inventory is becoming too heavy, I cant take those")
 
-    
 def print_locations(current_node):
 
     directions = {
@@ -142,7 +178,7 @@ def print_locations(current_node):
         "SOUTH": current_node.to_south,
         "WEST": current_node.to_west
     }
-    print("-----------")
+    print(common_operations.BAR)
     for x in directions:
         entity_type = directions.get(x).entity_type # type: ignore
         if entity_type != "":
@@ -166,6 +202,13 @@ def outcome_handler(outcome, npc_details, node, player_detail = Player(), direct
             print_game_over(npc_details)
             return
         else:
+            if node.npc_on_enter == npc_details:
+                node.npc_on_enter = NPC()
+            else:
+                setattr(node, direction_map[direction], Entity())
+
+            for item in npc_details.items:
+                node.items.append(item)
             return
 
 
@@ -176,14 +219,14 @@ def outcome_handler(outcome, npc_details, node, player_detail = Player(), direct
     if "GIVE" in outcome:
         for x in npc_details.items:
             player_detail.add_item(x[0], x[1])
-            print(f"You got {x[1]} {x[0].name} (s)")
+            common_operations.print_with_readtime(f"You got {x[1]} {x[0].name} (s)")
         
         npc_details.items.clear()
 
     if npc_details is not None and hasattr(npc_details, "excuse"):
         # If npc has excuse (excuse -> to leave from map), remove mapping
         if npc_details.excuse != "":
-            print(npc_details.name + ": " + npc_details.excuse)
+            common_operations.print_with_readtime(npc_details.name + ": " + npc_details.excuse)
             setattr(node, direction_map[direction], Entity())
 
     

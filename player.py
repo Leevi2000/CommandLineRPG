@@ -1,4 +1,5 @@
 
+from hmac import new
 import common_operations
 from entity_list import Items
 from objects import Armor, Item, Weapon
@@ -101,6 +102,20 @@ class Player:
         print("-----------------")
         print(f"Carrying: {total_weight} kg(s) of {self.max_weight} kg(s) maximum")
         
+    def weight_overload(self, weight = 0):
+        new_weight = weight + self.get_items_weight()
+        if new_weight > self.max_weight:
+            return True
+        else:
+            return False
+        
+    def get_items_weight(self):
+        total_weight = 0.0
+        for x in range(len(self.inventory)):
+            item = self.inventory[x][0]
+            quantity = self.inventory[x][1]
+            total_weight += item.weight * quantity
+        return round(total_weight, 2)
 
     def get_items_of_type(self, filterList = [""]):
     
@@ -143,6 +158,7 @@ class Player:
         print(f"Healed {selected_item.healing} points. Your hp is now {self.hp}")
 
     def equip_item(self):
+
         items = self.get_items_of_type(["Weapon", "Armor"])
         items.append([Items.fists, 1])
         items.sort(key=lambda item: item[0].entity_type)
@@ -160,6 +176,22 @@ class Player:
         self.equip_armor(selected_item)
         print(f"{BAR} \n Equipped {selected_item.name}, with DEF: {selected_item.defense} \n Total DEF: {self.defense}")
     
+    def drop_items(self):
+        items_to_drop = []
+        while True:
+            items = self.get_items_of_type()
+            msg = self.get_carried_weight_string()
+            selected_item = common_operations.select_item(items, msg)
 
+            if selected_item == -1:
+                    break
+            
+            self.remove_item(selected_item)
+            items_to_drop.append(selected_item)
+            print(f"Dropped {selected_item.name} on the ground")
+        return items_to_drop
+        
+    def get_carried_weight_string(self):
+        return f"Carrying: {self.get_items_weight()} kg(s) of {self.max_weight} kg(s) maximum"
         
         

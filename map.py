@@ -1,3 +1,4 @@
+from tkinter import N
 from objects import Entity, Item, Node
 from entity_list import NPCs, Items
 
@@ -62,6 +63,7 @@ class Map:
     map_to_direction(marketplace, alley, west)
     map_to_direction(alley, NPCs.rogue, north)
     map_to_direction(marketplace, NPCs.trader_of_windermere, east)
+    map_to_direction(neighbours_house, windermere_southern_exit, south)
     
 
     # --------------------------------
@@ -75,3 +77,59 @@ class Map:
     FOW_bilberry_area = Node("Bilberry bushes",
                              "Your gaze meets the bilberry bushes")
     FOW_bilberry_area.add_item(Items.bilberry, 7)
+
+    FOW_middle_section = Node("Glade",
+                              """You walk upon a small glade. The sun slices through the leaves and lights up the otherwise dark area. The road continues to the NORTH and EAST.
+                              """)
+    
+    FOW_Ambush = Node("Eastern diverging roads",
+                      "You hear the leaves rattle as you approach the intersection")
+    FOW_Ambush.npc_on_enter = NPCs.FOW_small_goblin_army
+    
+    map_to_direction(FOW_junction_north, windermere_southern_exit, north)
+    map_to_direction(FOW_junction_north, FOW_bilberry_area, west)
+    map_to_direction(FOW_junction_north, FOW_middle_section, south)
+    map_to_direction(FOW_middle_section, NPCs.bear, west)
+    map_to_direction(FOW_middle_section, NPCs.FOW_mysterious_man, south)
+    map_to_direction(FOW_middle_section, FOW_Ambush, east)
+
+    # --------------------------------
+    # Evermist Glade
+    # --------------------------------
+    
+    EG_north = Node("Northern entrance to the Evermist Glade", "A magical clearing shrouded in perpetual mist.")
+
+    EG_northern_junction = Node("Junction with blue fireflies", "Faint, ethereal song carries over the mist.")
+
+    EG_the_shimmering_arch = Node("Natural stone arch covered in glowing moss", "There seems to be an ancient portal-like structure.")
+
+    EG_southern_junction = Node("ancient oak roots diverging into two directions", "The air is thick with glowing spores, and faint whispers seem to echo from all directions, making it a place of both decision and unease.")
+
+    EG_crystal_pool = Node("Crystal pool", "Still, circular pool of water that reflects the surroundings like a perfect mirror.")
+
+    EG_south = Node("Southern entrance to the Evermist Glade", "The mist is thin here. A giant tree can be seen east of the Evermist Glade")
+
+    # Path to the tree
+    EG_east_path = Node("ancient roots fusing into a clear path", "The mist here is dense, almost forming a layer on my skin")
+
+    EG_entrance_tree = Node("Outline of an ancient tree of Mistspire", "The tree is massive, ancient tree with a silvery trunk and sprawling branches that seem to support the mist itself. Far away your eyes detect some movement")
+
+    EG_the_mistspire_tree = Node("The Mistspire Tree", "Its hollow base houses a small sanctuary with carvings of forgotten gods and a faintly glowing orb, believed to be the source of the glade’s perpetual mist.")
+    EG_the_mistspire_tree.npc_on_enter = NPCs.EG_mistwarden
+
+    map_to_direction(EG_north, FOW_Ambush, north)
+    map_to_direction(EG_north, EG_northern_junction, south)
+    map_to_direction(EG_northern_junction, EG_the_shimmering_arch, south)
+    map_to_direction(EG_the_shimmering_arch, EG_southern_junction, south)
+    map_to_direction(EG_the_shimmering_arch, NPCs.EG_lost_seeker, west)
+    map_to_direction(EG_southern_junction, EG_crystal_pool, west)
+    map_to_direction(EG_crystal_pool, NPCs.EG_elderglow_nymph, north)
+    map_to_direction(EG_southern_junction, EG_south, south)
+
+    map_to_direction(EG_northern_junction, EG_east_path, east)
+    map_to_direction(EG_east_path, EG_entrance_tree, south)
+    map_to_direction(EG_entrance_tree, EG_the_mistspire_tree, south)
+    EG_the_mistspire_tree.npc_on_enter = NPCs.EG_mistwarden
+    
+
+    

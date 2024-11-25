@@ -1,0 +1,6 @@
+[TXT]
+The leaves rustle...
+{NPC}: *Growl*
+[TXT END]
+
+[OUTCOME: ATTACK]

@@ -1,3 +1,6 @@
+from time import sleep
+
+
 BAR = "-----------------"
 
 def print_item_list(items):
@@ -11,7 +14,8 @@ def print_item_list(items):
         print(f"{len(items) + 1}: Go back")
         return True
 
-def select_item(items):
+def select_item(items, msg = ""):
+        print(msg)
         while True:
             items_not_empty = print_item_list(items)
 
@@ -33,3 +37,8 @@ def select_item(items):
 
             item = items[int(i) - 1][0]
             return item
+        
+def print_with_readtime(msg):
+    timer = (len(msg)/1200)*60
+    print(msg)
+    sleep(timer)
