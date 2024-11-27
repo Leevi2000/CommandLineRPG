@@ -131,5 +131,22 @@ class Map:
     map_to_direction(EG_entrance_tree, EG_the_mistspire_tree, south)
     EG_the_mistspire_tree.npc_on_enter = NPCs.EG_mistwarden
     
+    # --------------------------------
+    # Moonlit Fen
+    # --------------------------------
 
+    MF_shimmering_thicket = Node("Shimmering Thicket", "The thicket is a maze of glowing vines, ferns, and flowers that shift subtly, making it easy to lose one’s way.")
+
+    MF_silver_mire = Node("Silver Mire", "A treacherous marsh where pools of water glimmer like liquid mercury under the moonlight. Mist drifts low to the ground, obscuring uneven terrain and dangerous sinkholes.")
+
+    MF_pathway = Node("Vine-formed path", "Intertwining vines arch gracefully overhead, creating a tunnel-like passage.")
+
+    MF_celestial_basin = Node("The Celestial Basin", "A massive, moonlit pool at the heart of the Fen, its water so still it perfectly reflects the sky above.")
+
+    MF_greyhold_passage = Node("Faint imagery of a giant castle not so far away")
     
+    MF_ruins_enter = Node("Ruin Entrance", "Ruin pathway that seems to lead further downward")
+
+    MF_lunar_obelisk = Node("Lunar Obelisk", "A towering stone pillar carved with ancient runes, located in a moonlit clearing.")
+
+    MF_glowspire_canopy = Node("Glowspire Canopy", "A dense cluster of towering ferns that rise high above the fen, their fronds tipped with bioluminescent light.")

@@ -138,24 +138,25 @@ class Player:
             print(f"{x + 1}: {items[x][0].name}, {items[x][0].get_details()}")
 
         if len(items) == 0:
-            print("No items to choose from!")
+            common_operations.print_with_readtime("No items to choose from!")
             return False
 
         print(f"{len(items) + 1}: Go back")
         return True
 
     def use_item(self):
-        items = self.get_items_of_type(["Healing"])
-        selected_item = common_operations.select_item(items)
+        while True:
+            items = self.get_items_of_type(["Healing"])
+            selected_item = common_operations.select_item(items)
 
-        # If player didn't choose an item to throw, go back into action selection
-        if selected_item == -1:
-            return
+            # If player didn't choose an item to throw, go back into action selection
+            if selected_item == -1:
+                break
 
-        self.remove_item(selected_item)
-        self.heal(selected_item.healing)
+            self.remove_item(selected_item)
+            self.heal(selected_item.healing)
 
-        print(f"Healed {selected_item.healing} points. Your hp is now {self.hp}")
+            common_operations.print_with_readtime(f"Healed {selected_item.healing} points. Your hp is now {self.hp}")
 
     def equip_item(self):
 

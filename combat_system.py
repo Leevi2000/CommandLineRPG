@@ -1,6 +1,6 @@
 
 import random
-from common_operations import BAR, print_with_readtime
+from common_operations import BAR, print_with_readtime, select_speed_option
 import common_operations
 import objects
 from player import Player
@@ -16,7 +16,7 @@ def start_combat(player, enemy, node):
     return handle_command(player, enemy, node)
 
 def handle_command(player, enemy, node):
-    input_choices = ["THROW", "USE", "INVENTORY", "EQUIP", "ATTACK"]
+    input_choices = ["THROW", "USE", "INVENTORY", "EQUIP", "ATTACK", "DIALOG", "FLEE"]
 
     shortcut_input = {
         "INV": "INVENTORY",
@@ -24,7 +24,8 @@ def handle_command(player, enemy, node):
         "EQ": "EQUIP",
         "U": "USE",
         "A": "ATTACK",
-        "E": "EQUIP"
+        "E": "EQUIP",
+        "DLG": "DIALOG"
     }
 
     if player.equipped_weapon.name == "":
@@ -44,7 +45,7 @@ def handle_command(player, enemy, node):
         player.print_stats()
         print(f" {enemy.name} HP left: {enemy.hp}")
 
-        print(f"{BAR} \n Enter a command! (Possible commands: THROW, USE, INVENTORY, EQUIP, ATTACK) \n {BAR}")
+        print(f"{BAR} \n Enter a command! (Possible commands: THROW, USE, INVENTORY, EQUIP, ATTACK, FLEE, DIALOG) \n {BAR}")
         i = input("> ").upper()
 
         for key, value in shortcut_input.items():
@@ -67,6 +68,13 @@ def handle_command(player, enemy, node):
             attack_logic(player, enemy)
         if "USE" in i:
             player.use_item()
+        if "DIALOG" in i:
+            select_speed_option()
+        if "FLEE" in i:
+            success = try_flee(player, enemy)
+            if success:
+                break
+            damage_creature(player, enemy.attack_dmg, enemy)
 
 def check_for_winner(player, enemy):
     if player.hp > 0 and enemy.hp <= 0:
@@ -75,6 +83,21 @@ def check_for_winner(player, enemy):
         return enemy
     
     return -1
+
+def try_flee(player, enemy):
+    e = 2.7182
+    flee_chance = 1/((enemy.attack_dmg-player.defense)*3)*player.hp*e**(-(player.hp/28.85))
+    flee_chance = flee_chance * 100 
+    #flee_chance = (1-((enemy.attack_dmg-player.defense/2)/player.hp))*100
+    if flee_chance > 100:
+        flee_chance = 100
+    value = random.randrange(0, 100)
+    print_with_readtime(f"Trying to flee, chance for success: {round(flee_chance, 2)} %")
+    if value < flee_chance:
+        print_with_readtime("Succesfully fleed from battle")
+        return True
+    print_with_readtime("Flee failed")
+    return False
 
 def attack_logic(player, enemy):
 

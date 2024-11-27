@@ -45,7 +45,7 @@ class NPCs:
     # Forest of Windermere NPC's
     # --------------------------------
 
-    bear = NPC(15, 6, "Furious Bear", 1, "shade of a moving, round like creature", "furious_bear.txt", "Grrrrrr.... *Growl*")
+    bear = NPC(15, 6, "Furious Bear", 1, "shade of a moving, round like creature", "furious_bear.txt")
     bear.add_item(Items.bear_meat, 2)
 
     FOW_mysterious_man = NPC(8, 20, "Mysterious Man", 5, "ominous looking human with a rugged beard", "mysterious_man.txt")
@@ -65,3 +65,7 @@ class NPCs:
     EG_mistwarden = NPC(30, 8, "The Mistwarden", 10, "A tall, ghostly figure cloaked in flowing robes of mist", "EG_mistwarden.txt")
     EG_mistwarden.add_item(Items.shroud_of_mistwarden)
     EG_mistwarden.add_item(Items.mistbound_roots)
+
+    # --------------------------------
+    # Moonlit Fen NPC's
+    # --------------------------------
