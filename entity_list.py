@@ -24,6 +24,15 @@ class Items:
     shroud_of_mistwarden = Armor("Shroud Of Mistwarden", 0.1, 0, 50, "A shimmering cloak made of pure mist. When worn, mist compresses itself around you to create a firm, defensive layer", 5, "chest")
     mistbound_roots = Healing("Mistbound Roots", 0.1, 0, 20, "Gnarled roots wrapped in a soft, glowing mist, still pulsing with life.", 20)
 
+    fenlight_crystal = Item("Fenlight Crystal", 2, 4, 25, "A small, pale crystal that glows faintly when held.")
+
+    mossy_bark_greaves = Armor("Mossy bark greaves", 4, 2, 20, "You can still feel Elder Myrrow's protective spell flowing through the trousers")
+
+    wooden_dart = Weapon("Wooden Dart", 0.2, 1, 5, "ordinary darts, nothing special", 2, 1)
+
+    mushroom = Healing("Red Mushroom", 0.1, 0, 4, "Basic mushrooms", 2)
+
+
 # Holds list of different kind of NPC variables that can be used in game
 class NPCs:
     from objects import NPC
@@ -69,3 +78,15 @@ class NPCs:
     # --------------------------------
     # Moonlit Fen NPC's
     # --------------------------------
+
+    MF_lumina_twins = NPC(12, 5, "The Lumina Twins", 0.3, "Two spirits, who appear to be made of faintly glowing mist", "MF_lumina_twins.txt")
+    MF_lumina_twins.add_item(Items.fenlight_crystal)
+
+    MF_elder_myrrow = NPC(20, 10, "Elder Myrrow", 4, "Humanoid creature with bark-like skin and moss growing across their body", "MF_elder_myrrow.txt")
+    MF_elder_myrrow.create_reward(Items.fenlight_crystal, Items.mossy_bark_greaves)
+
+    MF_kael_moonlit_wanderer = NPC(10, 3, "Kael the Moonlit wanderer", 2, "A mysterious figure cloaked in dark, tattered robes that seem to drink in the moonlight", "MF_kael_moonlit_wanderer.txt")
+    MF_kael_moonlit_wanderer.add_item(Items.wooden_dart, 3)
+    MF_kael_moonlit_wanderer.add_item(Items.bear_meat)
+    MF_goblin_grunt = NPC(25, 4, "Goblin Grunt", 4, "a much bigger goblin than most goblins", "MF_goblin_grunt.txt")
+    MF_goblin_grunt.add_item(Items.money, 7)

@@ -1,0 +1,24 @@
+[TXT]
+{NPC}: Hehehehe!!!
+[TXT END]
+
+[CHOICES]
+
+	*Attack*[ATTACK]
+
+	Run away [RUN]
+
+[CHOICES END]
+
+[RUN]
+
+[TXT]
+*You turn back and run*
+{NPC}: Don't you dare to leave!
+*One of the twins materializes just in front of you, forcing you into conflict*
+[TXT END]
+	[OUTCOME: ATTACK]	
+
+[ATTACK]
+	[OUTCOME: ATTACK]
+

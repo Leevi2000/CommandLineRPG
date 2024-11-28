@@ -1,3 +1,4 @@
+from urllib import request
 from common_operations import BAR, print_with_readtime
 import entity_list
 from player import Player
@@ -53,6 +54,12 @@ class DialogReader:
                     return self.player, _content[row_num].strip()
                 row_num = previous_choice_row
 
+            if "[REWARDS]" in _content[row_num]:
+                self.reward_dialog()
+                if "[OUTCOME:" in _content[row_num]:
+                    return self.player, _content[row_num].strip()
+                row_num = previous_choice_row
+
             if "[CONTINUE]" in _content[row_num]:
                 row_num = previous_choice_row
 
@@ -62,6 +69,45 @@ class DialogReader:
             row_num += 1
 
         return self.player, "NO OUTCOME"
+
+    def reward_dialog(self):
+        while True:
+            rewards = self.npc.rewards
+            print(f"{BAR} \n What do you want to exchange? \n {BAR}")
+            i = 1
+            for reward in rewards:
+                needed_item = reward[0][0]
+                needed_item_qty = reward[0][1]
+                reward_item = reward[1][0]
+                reward_item_qty = reward[1][1]
+
+                print(f"{i}: You'll get {reward_item_qty}x {reward_item.name}(s) for {needed_item_qty}x {needed_item.name}(s)")
+                i += 1
+
+            print(f"{i}: Exit")
+
+            reward_index = input(f"{BAR} \n> ")
+
+            try:
+                reward_index = int(reward_index) - 1
+            except ValueError:
+                continue
+
+            if reward_index == len(rewards):
+                break
+
+            if reward_index >= 0 and reward_index < len(rewards):
+                needed_item = rewards[reward_index][0][0]
+                needed_item_qty = rewards[reward_index][0][1]
+                reward_item = rewards[reward_index][1][0]
+                reward_item_qty = rewards[reward_index][1][1]
+
+                if self.player.remove_item(needed_item, needed_item_qty):
+                    self.player.add_item(reward_item, reward_item_qty)
+                    rewards.pop(reward_index)
+                    print_with_readtime(f"You got {reward_item_qty}x {reward_item}")
+                else:
+                    print_with_readtime("You don't have the item(s)")
 
     def sell_dialog(self):
         while True:

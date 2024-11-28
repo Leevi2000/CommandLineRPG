@@ -85,6 +85,8 @@ class Map:
     FOW_Ambush = Node("Eastern diverging roads",
                       "You hear the leaves rattle as you approach the intersection")
     FOW_Ambush.npc_on_enter = NPCs.FOW_small_goblin_army
+
+    FOW_outpost = Node("Abandoned Outpost", "Looks like a fight had broken out here")
     
     map_to_direction(FOW_junction_north, windermere_southern_exit, north)
     map_to_direction(FOW_junction_north, FOW_bilberry_area, west)
@@ -92,6 +94,7 @@ class Map:
     map_to_direction(FOW_middle_section, NPCs.bear, west)
     map_to_direction(FOW_middle_section, NPCs.FOW_mysterious_man, south)
     map_to_direction(FOW_middle_section, FOW_Ambush, east)
+    map_to_direction(FOW_Ambush, FOW_outpost, east)
 
     # --------------------------------
     # Evermist Glade
@@ -139,14 +142,31 @@ class Map:
 
     MF_silver_mire = Node("Silver Mire", "A treacherous marsh where pools of water glimmer like liquid mercury under the moonlight. Mist drifts low to the ground, obscuring uneven terrain and dangerous sinkholes.")
 
+    MF_mushrooms = Node("Mushroom clusters", "Few mushrooms sprouting out from ground")
+    MF_mushrooms.add_item(Items.mushroom, 5)
+
     MF_pathway = Node("Vine-formed path", "Intertwining vines arch gracefully overhead, creating a tunnel-like passage.")
 
     MF_celestial_basin = Node("The Celestial Basin", "A massive, moonlit pool at the heart of the Fen, its water so still it perfectly reflects the sky above.")
 
     MF_greyhold_passage = Node("Faint imagery of a giant castle not so far away")
+    MF_greyhold_passage.npc_on_enter = NPCs.MF_goblin_grunt
     
     MF_ruins_enter = Node("Ruin Entrance", "Ruin pathway that seems to lead further downward")
 
     MF_lunar_obelisk = Node("Lunar Obelisk", "A towering stone pillar carved with ancient runes, located in a moonlit clearing.")
 
     MF_glowspire_canopy = Node("Glowspire Canopy", "A dense cluster of towering ferns that rise high above the fen, their fronds tipped with bioluminescent light.")
+
+    map_to_direction(FOW_outpost, MF_shimmering_thicket, east)
+    map_to_direction(MF_shimmering_thicket, MF_silver_mire, east)
+    map_to_direction(MF_silver_mire, NPCs.MF_lumina_twins, east)
+    map_to_direction(MF_silver_mire, MF_mushrooms, north)
+    map_to_direction(MF_shimmering_thicket, MF_pathway, north)
+    map_to_direction(MF_pathway, NPCs.MF_elder_myrrow, west)
+    map_to_direction(MF_pathway, MF_celestial_basin, north)
+    map_to_direction(MF_celestial_basin, MF_ruins_enter, north)
+    map_to_direction(MF_celestial_basin, MF_greyhold_passage, west)
+    map_to_direction(MF_celestial_basin, MF_lunar_obelisk, east)
+    map_to_direction(MF_lunar_obelisk, NPCs.MF_kael_moonlit_wanderer, east)
+    map_to_direction(MF_lunar_obelisk, MF_glowspire_canopy, north)

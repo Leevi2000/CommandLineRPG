@@ -1,0 +1,5 @@
+[TXT]
+{NPC}: This is our land! You are dead!
+[TXT END]
+
+[OUTCOME: ATTACK]

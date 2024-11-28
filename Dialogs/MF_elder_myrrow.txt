@@ -1,0 +1,27 @@
+[TXT]
+{NPC}: Hello, traveler.
+[TXT END]
+
+[CHOICES]
+
+	Do you need anything? [QUEST]
+
+	I've heard rumors that there have been goblin raids [GOBLIN]
+
+	Goodbye [LEAVE]
+
+[CHOICES END]
+
+[QUEST]
+	[TXT]
+	{NPC}: Well, I might need some items...
+	[TXT END]
+		[REWARDS]
+[GOBLIN]
+	[TXT]
+	{NPC}: You are correct. They took over the Castle of Greyhold... Be cautious if you go there
+	[TXT END]
+		[CONTINUE]
+
+[LEAVE]
+	[OUTCOME: LEAVE]

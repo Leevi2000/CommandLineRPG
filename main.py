@@ -18,9 +18,9 @@ def main():
 
     player = Player("Player")
     player.add_item(Items.money, 10)
-    #player.add_item(Items.godsword)
+    player.add_item(Items.godsword)
 
-    current_node = Map.starting_house
+    current_node = Map.FOW_outpost
 
     print("-----------")
     cleaned_description = re.sub(r'\s+', ' ', current_node.detailed_description.strip())
@@ -204,7 +204,7 @@ def outcome_handler(outcome, npc_details, node, player_detail = Player(), direct
                 setattr(node, direction_map[direction], Entity())
 
             for item in npc_details.items:
-                node.items.append(item)
+                node.add_item(item[0], item[1])
                 print_amount_of_items(node, True)
             return
 

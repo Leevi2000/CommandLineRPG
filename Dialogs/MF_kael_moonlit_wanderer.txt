@@ -1,0 +1,48 @@
+[TXT]
+{NPC}: I see you're a traveler just like me. Perhaps you're just beginning your adventures?
+[TXT END]
+
+[CHOICES]
+
+	I recently set off from Town of Windermere [ANSWER]
+
+	Would you have any equipment to sell? [TRADE]
+	BUY [BUY]
+
+	SELL [SELL]
+
+	Bye [LEAVE]
+
+[CHOICES END]
+
+[ANSWER]
+	[TXT]
+	{NPC}: Great! Now I warn you, there are numerous dangers everywhere you go...
+		I have some spare equipment to sell if you need anything
+	[TXT END]
+
+	[CHOICES]
+	
+		BUY [BUY]
+
+		SELL [SELL]
+	
+		Bye [LEAVE]
+
+	[CHOICES END]
+
+[BUY]
+
+	[BUY DIALOG]
+
+[SELL]
+
+	[SELL DIALOG]
+
+[LEAVE]
+
+[TXT]
+{NPC}: Safe travels!
+[TXT END]
+
+	[OUTCOME: LEAVE]

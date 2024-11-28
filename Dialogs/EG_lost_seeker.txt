@@ -1,5 +1,5 @@
 [TXT]
-{NPC}: Who do we have here! It has been ages since anyone has showed up around here.
+{NPC}: Who do we have here! It has been ages since anyone has shown up around here.
        Many avoid this place like plaque.
 [TXT END]
 

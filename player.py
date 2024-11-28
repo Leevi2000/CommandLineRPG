@@ -47,13 +47,18 @@ class Player:
         # If same item already in inventory, decrease the quantity
         for x in range(len(self.inventory)):
             if self.inventory[x][0] == item:
+
+                if quantity > self.inventory[x][1]:
+                    return False
+
                 self.inventory[x][1] -= quantity
                 # It quantity goes zero, remove item from inventory
                 if self.inventory[x][1] <= 0:
                     if item in self.armor.values():
                         self.unequip_armor(item)
                     self.inventory.pop(x)
-                break
+                return True
+        return False
                 
 
     def unequip_armor(self, item):

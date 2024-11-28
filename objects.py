@@ -42,7 +42,6 @@ class Node(Entity):
             break
 
     def add_item(self, item = Item(), quantity = 1):
-
         # If same item already in inventory, increase the quantity
         for x in range(len(self.items)):
             if self.items[x][0] == item:
@@ -64,6 +63,13 @@ class NPC(Entity):
         self.description = general_description
         self.excuse = excuse
         self.items = []
+
+        self.rewards = []
+
+    def create_reward(self, given_item, reward_item, given_quantity = 1, reward_quantity = 1):
+        given = [given_item, given_quantity]
+        reward = [reward_item, reward_quantity]
+        self.rewards.append([given, reward])
 
     def take_damage(self, damage = 0):
         self.hp -= damage

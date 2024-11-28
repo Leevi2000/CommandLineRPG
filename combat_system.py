@@ -8,9 +8,6 @@ from objects import *
 from entity_list import *
 import player
 
-
-
-
 def start_combat(player, enemy, node):
     print(f"{BAR} \n Combat started!")
     return handle_command(player, enemy, node)
@@ -86,9 +83,12 @@ def check_for_winner(player, enemy):
 
 def try_flee(player, enemy):
     e = 2.7182
-    flee_chance = 1/((enemy.attack_dmg-player.defense)*3)*player.hp*e**(-(player.hp/28.85))
+    real_dmg = enemy.attack_dmg-player.defense
+    if real_dmg == 0:
+        real_dmg = 0.01
+    else:
+        flee_chance = 1/((enemy.attack_dmg-player.defense)*3)*player.hp*e**(-(player.hp/28.85))
     flee_chance = flee_chance * 100 
-    #flee_chance = (1-((enemy.attack_dmg-player.defense/2)/player.hp))*100
     if flee_chance > 100:
         flee_chance = 100
     value = random.randrange(0, 100)
